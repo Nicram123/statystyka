@@ -1,0 +1,246 @@
+przy masce w prawd dwuwymiarowym stosujemy np.atleast_2d z .T ale tylko przy maskY przy maskX juz nie 
+
+
+1) Estymacja parametryczna(6)
+- Estymacja wartosci oczekiwanej: S - odchylenie standardowe populacji 
+-parametr df ustawiany przy liczbie stopni swobody przy ppf
+- ddof - ustawiane przy std, var gdy ddof = 1 (z zproby a nie calej populacji ), brak ddof (cala populacja)
+-Estymacja wariancji, estymacja odchylenia ( S**2 z proby ) 
+- estymacja wsp. korelacji, 
+- estymacja parametrow funkcji rownania regresji 
+2) Estymacja nieparametryczna:
+a)
+- sns.histplot przy histplocie ustawiam dane 
+potem bins jako liczba przedzialow, 
+binwidth jako krok dla granic przedzialow potem ax 
+scatter ustawione dla osi ax, 
+np.full_like() parametry dane, wartosc 
+marker 
+scatter = wizualna reprezentacja zestawu danych
+ax.set_xlim() zakres przedzialow na x
+ax.set_ylim() zakres y
+jak ustawiam scattera to robie to w petli for w ktorym uzywam zip z parametrem range i ax.flatten()
+
+
+plt.subplots()
+podwojna petla for z enumeretami
+plt.show()
+
+
+b) Estymacja funkcji jadrowej
+jakas wartosc = linspace = rowno odlegle wartosci ustawiam parametry 
+x_min m_max estimation_points
+licze jakas wartosc ravel()  
+wyliczone val = linspace to loc rowna sie val w funkcji 
+norm.pdf() data(podany w parametrach) loc scale dla kazdego loc czyli kazdej wartosci po kolei z linspace()
+area to d razy sum()  zeros_like() z wartosci wewnatrz sumy
+sumujemy w petli for sumy pdfow jedna iteracja jest rowne jednej sumie pdfow 
+
+
+wyestymowana funkcja, wykres liniowy z wypelniona krzywa :
+plt.plot() 
+plt.fill_between() 
+plt.scatter() 
+
+c)
+Estymacja na podstawie dystrybuanty:
+sorted_data = posortowane dane .sort()
+X to sorted_data F_d to emp_cdf F_d_min to maximum
+F_d_max to minimum
+emp_cdf  to arange wartosci od 1 do n+1 /n 
+plt.title() - tytul wykresu 
+plt.legend()
+from scipy.stats import kstwo
+
+d) estymacja rozkladu danych : 
+pierw licze plt.subplots()
+names = ["gaussian","tophat","epanechnikov","exponential","linear","cosine"] , potem licze w petli for 
+np.array() uzywam reshape()  minus jeden , jeden # liczy mi dane dwuwymiarowe
+KernelDensity() bandwidth kernel=names[i]
+kde.fit() - dopasowanie danych 
+np.linspace() z [:, np.newaxis] linspace robie z minimum potem maximum na koncu okresla ilosc  np.1000
+kde.score_samples( ) z posortowanych danych # logarytmiczne wartosci 
+np.exp()
+plot() posortowane dane potem exp a na koncu kolor 
+set_xlabel() 
+axes[]
+set_ylabel()
+set_title()
+scatter()
+plt.setp() axes ylim=() xlim=()
+plt.legend()
+plt.tight_layout()
+plt.show()
+
+
+3) Estymacja metoda bootstrap 
+dedykowane funkcje bootstrap()
+krotka danych statystyka confidence_level random_state paired
+statystyka np. (np.mean, np.var, np.std, sp.stats.pearsonr, sp.stats.linregress)
+
+4) rozklad dyskretny:
+dystrybuanta = np.cumsum()
+np.arange() 
+np.array([])
+np.hstack([])
+pd.IntervalIndex.from_breaks()
+srednia = suma z (xi * pi)
+variancja = suma z (xi - srednia)^2 * pi
+binom = rozklad dyskretny
+pmf parametry dane, n - liczba, p - prawdopodobienstwa
+cumsum -> wartosc 
+binom.mean()  ustawiam n  potem p
+np.linspace()   
+poisson.mean() lambda
+gdy prawd dyskretne ->
+mask = () & () dla przedzialow typu 1< x < 8, tu lepiej uzywac sumy z kropka .sum()
+np.argmax()  warunek x > il, zwraca indeks pierwszego wystapienia elementu 
+
+5) rozklad ciagly:
+sp.integrate.quad()[0] przyjmuje lambde low upper , wazne zeby na koncu przyjac [0] 
+-maska dziala tylko do array 
+- rozklad gamma wazny jest parametr scale jako fi 
+- przy mean, var , std tez ustawiam scale 
+- wzor na rozklad gamma:
+1/(math.gamma(k) * fi**k) * x**k-1 * exp(-x / fi)
+
+6) Weryfikacja hipotez statystycznych:
+a)wartosc przecietna (populacja ) bez ddof
+b)wariancja (mala proba) czyli ddof = 1  
+c)wskaznik struktury (moze nie musi ddof rowne 1) , ppf dla normalnego -> parametr p obliczamy jako ilosc 1 wystepujacych w danych / ilosc wszystkich danych 
+- wizualizacja - przy two-sided outer przy innych inner 
+
+- sp.stats.ttest_rel().pvalue  parametry stat1 stat2 alternative 
+zweryfikuj hipotezę, że średnie wagi elementów schodzących z obu linii produkcyjnych są identyczne, względem hipotezy alternatywnej, że średnia waga elementów schodzących z drugiej linii produkcyjnej jest wyższa niż z pierwszej linii
+
+- sp.stats.ttest_1samp()  zweryfikuj hipotezę, że średnia waga elementów schodzących z pierwszej linii produkcyjnej jest równa 0.5kg względem hipotezy alternatywnej, że średnia waga elementów schodzących z pierwszej linii produkcyjnej jest wyższa od 0.5kg.
+
+- sp.stats.binomtest() 
+ilosc orlow, dlugosc tablicy(wszystkie rzuty) p alternative
+ zweryfikuj hipotezę, że moneta jest uczciwa (prawdopodobieństwo wyrzucenia orła i reszki jest równe) 
+
+
+7) rozklad dwu parametrowy:
+
+sum() przy axisie bedacym zerem suma po kolumnach w DataFrame
+sum() przy axisie bedacym jeden suma po kolumnach w DataFrame
+
+-przy prawd. podwojnym x, y uzywamy dane.loc[ ] pierw idzie index potem columns na koncu sum() * 2 , laczenie warunkow za pomoca & 
+
+- prz niezaleznosci zmiennych losowych 
+licze px i py (rozklady brzegowe ), zamieniamy na array px i py, mnozymy arraysy przez siebie funkcja np.dot(), potem liczymy test porownujac pomnozone mcierze z r1p.values opakowujemy to przez all()
+
+- r1_mean = suma (xi * yj * pij)
+Ex=suma(xi * r1bx-> brzegowe) Ey=suma(yj * r1by-> brzegowe)
+-r1_var = suma ((xi - Ex)**2 * (yj - Ey)**2 * pij) 
+-r1_cov = suma ((xi - Ex) * (yj - Ey) * pij) 
+Dx2 = suma ((xi - Ex)**2 *  r1bx)
+Dy2 = sum ((yj - Ey)**2 *  r1by)
+-r1_r = r_cov/(Dx * Dy)
+
+- () & ()
+
+- dane.iloc[i, j] odwolywanie sie do pojedynczych wartosci w DataFrame
+-
+
+8) Test zgodnosci chi^2 Pearsona
+-pmf() z danymi liczba danych  p przy binomie 
+-count dziala tylko dla listy 
+-n to suma wartosci w N(x)
+-k to ilosc wierszy ktorej kolwiek z tabelek 
+
+
+
+-scipy.stats.shapiro() dane usuwajac na,  na koncu .pvalue
+- zweryfikuj hipotezę, że głębokość dzioba pingwinów gatunku Gentoo ma rozkład normalny, jeden parametr tylko bedacy danymix 
+bill_depth_mm = glebokosc dzioba 
+
+- scipy.stats.kstest() 
+data sp.stats.norm() mean std musi to byc dystrybuanta .cdf
+ zweryfikuj hipotezę, że długość skrzydeł pingwinów gatunku Adelie ma rozkład normalny o wartości oczekiwanej 190 i odchyleniu standardowym 6. Tu juz oprocz danych ustawiam jeszcze jako parametr sp.stats.norm() na koncu cdf po . po dystrybuanta
+
+- sp.stats.kstest() 
+w tym przypadku ustawiam dane1 i dane2 
+zweryfikuj hipotezę, że długość skrzydeł pingwinów gatunku Adelie i Chinstrap mają taki sam rozkład statystyczny, pamietac nalezy o dropna()
+
+- scipy.stats.chisquare()
+zweryfikuj hipotezę, że długość skrzydeł pingwinów gatunku Adelie ma rozkład normalny o wartości oczekiwanej 190 i odchyleniu standardowym 6
+
+wybieram dane dla gatunku danego np. Adelie, z tych danych wybieram tylko np. dlugosc dzioba 'flipper_length_mm', 
+alpha =
+mu = 
+sigma = 
+n = 
+licze przedzialy bins za pomoca np.arrange()
+potem uzywam funkcji hist, b = np.histogram() 
+z parametrami dane, bins
+licze probabilities przy pomocy np.array([])
+w [] roznica sp.stats.norm.cdf()
+bins, loc, scale i to samo tylko o jedno wczesniej przedzial calosc opakowane w petle for od 1 do len(bins),
+potem probabilities dziele na sume probabilities
+potem obliczam expected_counts jako iloczyn probabilities i n 
+potem licze statistic, pvalue_3 porownujac to do sp.stats.chisquare z hist, f_exp jako expected_counts
+
+ 
+9) - pierwsze 200 osob ktore przeszly przez brame:
+uzywamy sort_values() z argumentem by dla populacji po kropce 
+potem uzywamy head() podajemy tam liczbe przechodzacych osob przez brame po kropce dane posortowane 
+ - pobieramy probe losowa z 200 osob , jedna osoba moze udzielic wiecej niz jednej odpowiedzi sample() z ilosc , replace z danymi po kropce  
+- w przypadku koniecznosci grupowania po 'Sektorze' uzywamy, apply() po kropce do groupby(), w apply uzywamy funkcje lambda a wewnetrzn funkcja sample
+
+10) Cultivar = odmiany winogron 
+seaborn.boxplot() x y data ax color showmeans size alpha
+set_title() 
+seaborn.violinplot()
+seaborn.stripplot() 
+seaborn.swarmplot()
+
+sns.boxplot() -> legend palette hue meanprops (slownik) marker markeredgecolor markerfacecolor
+
+-pd.Dataframe.describe() przygotuj tablicę statistics z podstawowymi statystykami opisowymi rozkładów poszczególnych parametrów.
+.apply() przed kropka DataFrame
+-from scipy.stats import kurtosis, skew
+-pandas.DataFrame.corr() - tablica wsp korelacji 
+-Wykorzystaj funkcję sns.heatmap() do zwizualizowania obliczonych wartości współczynników korelacji liniowej
+-> dane jako tablica corr()  potem ustawiam annot nastepnie cmap potem vmin potem vmax
+plt.figure()
+
+-Korzystając z funkcji seaborn.pairplot() przygotuj wykresy korelacyjne zestawiające ze sobą poszczególne parametry (osie X, Y) z podziałem na poszczególne odmiany winogron
+plot_kws  (distionary)
+dane hue palette markers plot_kws diag_kind
+ustalam plot_kws potem w nim scatter_kws potem w nim s alpha potem line_kws linewidth color
+
+
+sp.stats.linregress() wsp rownania regresji 
+.slope wyodrebnienie a
+.intercept wyodrebnienie b 
+
+
+Funkcja sns.regplot() -> wprowadzamy dane x i dane y pozwala na wykonanie wykresu korelacyjnego, jednak nie zwraca wyliczonych współczynników regresji
+
+plt.plot() - przerywana linia nalozona na niego na podstawie wyliczonych wczesniej wsp korelacji dane jako y, rownanie prostej liniowej zamiast x y linestyle color label
+dashed
+
+
+11)
+-wartosc przecietna metoda bootstrap:
+data jako parametr jest proba oryginalna z tego obliczmy srednia oryginalna z proby, populacje bootstrapowa tworzymy tak ze do data dodajemy (H0 - original_mean), potem losujemy number_of_sumples prob w petli za bootstrap_population.sample(), 
+dodajac do listy wartosci sredniej z tych prob , 
+najciekawsze sa ify bo czym jest frakcja: to nic innego jak suma z warunku logicznego (tablica_sredniach >= m) i ta sume dzielimy na number_of_samples, ciekawie jest tez dla two-sided bo tam mamy tez sume ale z (modulu roznicy tablica_srednich - H0 >= modulu roznicy oryginal_mean - H0) wszystko tez dzielone na number_of_samples
+
+- dwie wartosci przecietne metoda bootstrap:
+np.concatenate([]) , trzeba na DataFrame zamienic, wazna rzecz w ifach z less i greater jest znak odwrotnie niz przy metodzie powyzszej 
+
+- dwie wartosci przecietne metoda testu permutacyjnego - losowanie bez zwracania, reszta tak samo jak w metodzie nr 2, uzywamy tu isin(), dla wyznaczenia sample2 , index stosowany przy samp1 oraz przy bootstrap_population
+
+-scipy.stats.permutation_test()`, do zwertfikowania hipotezy o równości wartościach przeciętnych populacji z których zostały pobrane próby `test_data_1` i `test_data_2` względem hipotezy alternatywnej, że wartości oczekiwane tych populacji są różne
+-> w krotce ustawiam dane (2) , wybieram statistice, ustawiam alternative potem random_state ,  po kropce .pvalue[0] , w statistice wyrazenie lambda
+-scipy.stats.permutation_test()`, do zwertfikowania hipotezy o równości wariancji populacji z których zostały pobrane próby `test_data_1` i `test_data_2` względem hipotezy alternatywnej, że wariacja populacji, z której została pobrana próba `test_data_2` jest wyższa -> krotka z danymi , ustawiam potem statistica potem z kolei alternative, random_state po kropce .pvalue z indeksem 0 , w statistic lambda
+
+
+
+WAŻNE UWAGI: - przy rozladzie normalnym przy pdf jak i przy ppf , cdf trzeba okreslic trzy parametry srednia , odchylenie oraz dane , 
+
+przy gammie trzeba okreslic parametr scale i ogolnie mamy tak dane , k oraz fi jako scale , przy poissonie dane i k 
+
+
